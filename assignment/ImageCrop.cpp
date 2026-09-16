@@ -28,11 +28,11 @@ void onMouse(int event, int x, int y, int flages, void* params) {
 
 		img = clone.clone(); //사각형 영역을 계속해서 표현하기 위해,원본 이미지 가져옴
 		 
-		rectangle(img, Rect(Point(mx1, my1), Point(mx2, my2)), Scalar(0, 255, 0), 2); //사각형 그리는 함수, Point 이용해서 어느 방향으로 그리든 문제 없게 함
+		rectangle(img, Rect(Point(mx1, my1), Point(mx2, my2)), Scalar(0, 0, 0), 2); //사각형 그리는 함수, Point 이용해서 어느 방향으로 그리든 문제 없게 함
 
 		imshow("image", img); //사각형이 마우스를 따라오는걸 계속 띄움
 	}
-	else if (event == EVENT_LBUTTONUP) {
+	else if (event == EVENT_LBUTTONUP) { //버튼 클릭 끝났을 때
 
 		//마우스 마지막 위치 저장
 		mx2 = x;
@@ -42,7 +42,7 @@ void onMouse(int event, int x, int y, int flages, void* params) {
 
 		cropping = false; //사각형 더 안그리게 함
 
-		rectangle(img, Rect(Point(mx1, my1), Point(mx2, my2)), Scalar(0, 255, 0), 2); //사각형 그리는 함수, Point 이용해서 어느 방향으로 그리든 문제 없게 함
+		rectangle(img, Rect(Point(mx1, my1), Point(mx2, my2)), Scalar(0, 0, 0), 2); //사각형 그리는 함수, Point 이용해서 어느 방향으로 그리든 문제 없게 함
 
 		imshow("image", img); //사각형 위치 확정된 그림 띄움
 	}
@@ -65,7 +65,9 @@ int main() {
 			Rect box(Point(mx1, my1), Point(mx2, my2)); 
 
 			if (box.width > 0 && box.height > 0) {
-				roi = clone(box);
+				roi = clone(box).clone(); //크롭한 부분을 또 다시 복사해서 함 
+
+				roi.convertTo(roi, -1, 1, 10);   // 대비 1.2배 + 밝기 +10
 				imshow("result", roi); //크롭한 경과 보여줌
 				imwrite("C:/images/result.jpg", roi); //크롭한 결과 저장
 
@@ -73,6 +75,9 @@ int main() {
 			else {
 				cout << "지정된 영역이 없습니다." << endl;
 			}
+		}
+		else if (key == 'd') { //클릭 없이 초기화 하고 싶을 때 
+			imshow("image", clone);
 		}
 	}
 
